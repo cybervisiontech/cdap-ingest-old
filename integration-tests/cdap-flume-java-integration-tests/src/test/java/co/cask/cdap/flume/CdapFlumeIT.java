@@ -40,22 +40,21 @@ public class CdapFlumeIT {
 
   @Test
   public void baseEventProcessingTest() throws Exception {
-
     EmbeddedAgent agent = new EmbeddedAgent("test-flume");
     Properties properties = getProperties(System.getProperty(CONFIG_NAME));
     Map propertyMap = new HashMap<String, String>();
     for (final String name: properties.stringPropertyNames()) {
       propertyMap.put(name, properties.getProperty(name));
     }
-
     agent.configure(propertyMap);
     agent.start();
     for (int i = 0; i < eventNumber; i++) {
       Event event = new SimpleEvent();
       agent.put(event);
     }
-      agent.stop();
+    agent.stop();
   }
+
   @Test(expected = EventDeliveryException.class)
   public void failEventProcessingTest() throws Exception {
 
@@ -85,7 +84,7 @@ public class CdapFlumeIT {
     Field modifiersField = Field.class.getDeclaredField("modifiers");
     modifiersField.setAccessible(true);
     modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-    String []sinkList = {"co.cask.cdap.flume.StreamSink"};
+    String sinkList[] = {"co.cask.cdap.flume.StreamSink"};
     field.set(null, sinkList);
 }
 

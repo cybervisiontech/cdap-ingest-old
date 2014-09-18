@@ -39,20 +39,18 @@ import java.nio.ByteBuffer;
  * CDAP Sink, a Flume sink implementation.
  */
 public class StreamSink extends AbstractSink implements Configurable {
-
   private static final Logger LOG = LoggerFactory.getLogger(StreamSink.class);
 
   private static final int DEFAULT_WRITER_POOL_SIZE = 10;
-
   private static final boolean DEFAULT_SSL = false;
-
+  private static final boolean DEFAULT_DISABLE_CERT_CHECK = false;
   private static final String DEFAULT_VERSION = "v2";
-
   private static final int DEFAULT_PORT = 10000;
 
   private String host;
   private Integer port;
   private boolean sslEnabled;
+  private boolean disableCertCheck;
   private int writerPoolSize;
   private String version;
   private String streamName;
@@ -64,6 +62,7 @@ public class StreamSink extends AbstractSink implements Configurable {
     host = context.getString("host");
     port = context.getInteger("port", DEFAULT_PORT);
     sslEnabled = context.getBoolean("sslEnabled", DEFAULT_SSL);
+    disableCertCheck = context.getBoolean("disableCertCheck", DEFAULT_DISABLE_CERT_CHECK);
     version = context.getString("version", DEFAULT_VERSION);
     writerPoolSize = context.getInteger("writerPoolSize", DEFAULT_WRITER_POOL_SIZE);
     streamName = context.getString("streamName");
@@ -125,7 +124,7 @@ public class StreamSink extends AbstractSink implements Configurable {
       RestStreamClient.Builder builder = RestStreamClient.builder(host, port);
 
       builder.ssl(sslEnabled);
-
+      builder.disableCertCheck(disableCertCheck);
       builder.writerPoolSize(writerPoolSize);
       builder.version(version);
       streamClient = builder.build();
